@@ -77,7 +77,20 @@ if __name__ == '__main__':
     numpy_path = os.path.join(DATA_ROOT, 'numpy')
     with open(f'{numpy_path}/brain.npy', 'rb') as f:
         brain_list = pickle.load(f)
-        # select first brain in the list
-        brain = brain_list[0]
-        pil_img = convert_to_PIL(brain)
-        pil_img.show()
+
+    # select first brain in the list
+    sketch = brain_list[0]
+    num_stroke = len(sketch)
+    print(f'# This brain has {num_stroke} strokes')
+    # select first stroke
+    stroke = sketch[0]
+    stroke_length = len(stroke)
+    print(f'# This stroke has {stroke_length} points')
+
+    # visualize first stroke
+    stroke_img = convert_to_PIL([stroke])
+    stroke_img.show()
+
+    # visualize the whole image
+    sketch_img = convert_to_PIL(sketch)
+    sketch_img.show()
