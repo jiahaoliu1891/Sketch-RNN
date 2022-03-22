@@ -84,7 +84,8 @@ if __name__ == '__main__':
     print(f'# This brain has {num_stroke} strokes')
     # select first stroke
     stroke = sketch[0]
-    stroke_length = len(stroke)
+    stroke_length = stroke.shape[1]
+    print(stroke)
     print(f'# This stroke has {stroke_length} points')
 
     # visualize first stroke
