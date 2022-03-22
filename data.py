@@ -1,9 +1,9 @@
 import numpy as np
-import json
 import pandas as pd
 from tqdm import tqdm
 import os
 import pickle 
+from utils import convert_to_PIL
 
 def load_file(filepath):
     """
@@ -64,7 +64,7 @@ def load_data_to_numpy(origin_path, numpy_path):
         with open(f'{numpy_path}/{category}.npy', 'wb') as f:
             pickle.dump(sketch_list, f)
 
-def test_load_data():
+def test_load_data_to_numpy():
     DATA_ROOT = os.path.join(os.path.abspath('./'), 'data')
     origin_path = os.path.join(DATA_ROOT, 'origin')
     numpy_path = os.path.join(DATA_ROOT, 'numpy')
@@ -72,4 +72,12 @@ def test_load_data():
 
 
 if __name__ == '__main__':
-    test_load_data()
+    # test_load_data_to_numpy()
+    DATA_ROOT = os.path.join(os.path.abspath('./'), 'data')
+    numpy_path = os.path.join(DATA_ROOT, 'numpy')
+    with open(f'{numpy_path}/brain.npy', 'rb') as f:
+        brain_list = pickle.load(f)
+        # select first brain in the list
+        brain = brain_list[0]
+        pil_img = convert_to_PIL(brain)
+        pil_img.show()
