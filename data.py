@@ -85,7 +85,6 @@ if __name__ == '__main__':
     # select first stroke
     stroke = sketch[0]
     stroke_length = stroke.shape[1]
-    print(stroke)
     print(f'# This stroke has {stroke_length} points')
 
     # visualize first stroke
