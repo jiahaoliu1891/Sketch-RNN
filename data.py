@@ -4,6 +4,7 @@ from tqdm import tqdm
 import os
 import pickle 
 from utils import convert_to_PIL
+import seaborn as sns
 
 def load_file(filepath):
     """
@@ -42,7 +43,6 @@ def test_load_file():
     print(f'# Shape of {i_stroke}th Stroke: {stroke.shape}')
 
 
-
 def load_data_to_numpy(origin_path, numpy_path):
     """
         Load original data and convert it into numpy array 
@@ -64,6 +64,7 @@ def load_data_to_numpy(origin_path, numpy_path):
         with open(f'{numpy_path}/{category}.npy', 'wb') as f:
             pickle.dump(sketch_list, f)
 
+
 def test_load_data_to_numpy():
     DATA_ROOT = os.path.join(os.path.abspath('./'), 'data')
     origin_path = os.path.join(DATA_ROOT, 'origin')
@@ -71,26 +72,53 @@ def test_load_data_to_numpy():
     load_data_to_numpy(origin_path, numpy_path)
 
 
-if __name__ == '__main__':
-    # test_load_data_to_numpy()
+def save_img_by_category(catename):
     DATA_ROOT = os.path.join(os.path.abspath('./'), 'data')
     numpy_path = os.path.join(DATA_ROOT, 'numpy')
-    with open(f'{numpy_path}/brain.npy', 'rb') as f:
-        brain_list = pickle.load(f)
+    image_path = os.path.join(DATA_ROOT, 'image')
+    sketch_path = os.path.join(image_path, catename)
 
-    # select first brain in the list
-    sketch = brain_list[0]
-    num_stroke = len(sketch)
-    print(f'# This brain has {num_stroke} strokes')
-    # select first stroke
-    stroke = sketch[0]
-    stroke_length = stroke.shape[1]
-    print(f'# This stroke has {stroke_length} points')
+    if not os.path.exists(sketch_path):
+        os.mkdir(sketch_path)
 
-    # visualize first stroke
-    stroke_img = convert_to_PIL([stroke])
-    stroke_img.show()
+    with open(f'{numpy_path}/{catename}.npy', 'rb') as f:
+        sketch_list = pickle.load(f)
+    num = []
+    for i, sketch in enumerate(sketch_list):
+        num.append(len(sketch))
+        # sketch_img = convert_to_PIL(sketch)
+        # sketch_img.save(f'{sketch_path}/{i}.png')
+        # if i >= 500:
+        #     print('WARN: more than 500, quit...')
+        #     break
+    print(np.max(num), np.min(num), np.mean(num), np.var(num))
+    print(np.histogram(num))
 
-    # visualize the whole image
-    sketch_img = convert_to_PIL(sketch)
-    sketch_img.show()
+
+def save_all_image():
+    cate_list = load_category_name()
+    for catename in cate_list:
+        print(f'--- Save Image for {catename} ---')
+        save_img_by_category(catename)
+
+def save_category_name():
+    DATA_ROOT = os.path.join(os.path.abspath('./'), 'data')
+    origin_path = os.path.join(DATA_ROOT, 'origin')
+    with open(f'{DATA_ROOT}/category.txt', 'w+') as f:
+        for filename in os.listdir(origin_path):
+            category_name = filename.split('.')[0]
+            f.write(category_name + '\n')
+
+def load_category_name():
+    DATA_ROOT = os.path.join(os.path.abspath('./'), 'data')
+    category_name = []
+    with open(f'{DATA_ROOT}/category.txt', 'r') as f:
+        for line in f.readlines():
+            cate = line.strip('\n')
+            category_name.append(cate)
+    return category_name
+
+
+if __name__ == '__main__':
+    # save_all_image()
+    save_img_by_category('axe')
